@@ -51,5 +51,5 @@ struct BookArray find_book_by_author (const char *author);
 //array is the null pointer.
 struct BookArray find_book_by_year (unsigned int year);
 
-
+int write_books(FILE *file);
 #endif

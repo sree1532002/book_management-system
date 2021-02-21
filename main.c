@@ -200,10 +200,16 @@ int main()
     }
     else if(3 == choice){
         FILE *file = fopen("bookstore.txt","a+");
+        if(!file){
+             fprintf(stderr, "\nError opening file\n"); 
+        }
         store_books(file);
         fclose(file);
     }else if(4 == choice){
         FILE *file = fopen("bookstore.txt", "r");
+         if(!file){
+             fprintf(stderr, "\nError opening file\n"); 
+        }
         load_books(file);
         fclose(file);
     }
