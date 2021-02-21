@@ -19,7 +19,7 @@ typedef struct
 User list[USER_MAX];
 // define a global array, type User, size is USER_MAX
 
-char* fileuser_name = "user.txt";
+char fileuser_name[] = "user.txt";
 // user.txt need to create a file in your application directory
 
 
@@ -41,11 +41,17 @@ User login()
 // write txt file, there is a row for each user
 void writeToFile(User u)
 {
+    
+
     FILE *fw = fopen(fileuser_name,"a+");
-    fprintf(fw,u.user_name);
+   
+    fprintf(fw,"%s", u.user_name);
+     
     fprintf(fw,"\t");
-    fprintf(fw,u.password);
+    fprintf(fw,"%s", u.password);
+ 
     fprintf(fw,"\n");
+    fclose(fw);
 }
 
 // determine whether the user exists
@@ -144,6 +150,7 @@ int menu()
     printf("2.register\n");
     printf("#.exit\n");
     printf("3.Store\n");
+    printf("4. Load\n");
     printf("enter your choice:");
     scanf("%d",&choice);
     return choice;
@@ -193,10 +200,16 @@ int main()
     }
     else if(3 == choice){
         FILE *file = fopen("bookstore.txt","a+");
-    store_books(file);
+        store_books(file);
+        fclose(file);
+    }else if(4 == choice){
+        FILE *file = fopen("bookstore.txt", "r");
+        load_books(file);
+        fclose(file);
     }
     else
     {
+        fclose(fp);
         return 0;
     }
 
