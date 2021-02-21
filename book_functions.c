@@ -36,14 +36,17 @@ int store_books(FILE *file)
     }
     for (i = 0; i < m; i++)
     {
-        fprintf(file, &book[i].title);
+        sprintf((char *)&book[i].year, "%d", book[i].year);
+        sprintf((char *)&book[i].copies, "%d", book[i].copies);
+
+        fprintf(file, (char *)&book[i].title);
         fprintf(file, "\t");
-        fprintf(file, &book[i].authors);
+        fprintf(file, (char *)&book[i].authors);
         fprintf(file, "\t");
-        fprintf(file, book[i].year);
+        fprintf(file, (char *)&book[i].year);
         fprintf(file, "\t");
-        fprintf(file, book[i].copies);
-        fprintf(file, "\t");
+        fprintf(file, (char *)&book[i].copies);
+        fprintf(file, "\t\n");
     }
     return 0;
 }
