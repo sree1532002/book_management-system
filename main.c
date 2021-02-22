@@ -146,19 +146,18 @@ void registerUser()
 int menu()
 {
     int choice;
-    printf("1.login\n");
-    printf("2.register\n");
-    printf("#.exit\n");
-    printf("3.Store\n");
+    printf("1. Login\n");
+    printf("2. Register\n");
+    printf("3. Store\n");
     printf("4. Load\n");
-    printf("5.find_book_by_title\n");
-    printf("enter your choice:");
+    printf("5. Find book by title\n");
+    printf("6. Find book by author\n");
+    printf("7. Find book by year\n");
+    printf("#. Exit\n");
+    printf("Enter your choice: ");
     scanf("%d",&choice);
     return choice;
 }
-
-
-
 
 int main()
 {
@@ -219,6 +218,18 @@ int main()
         printf("Enter the title: ");
         scanf("%s",title);
         find_book_by_title(title);
+    }
+    else if(choice == 6){
+        char author[50];
+        printf("Enter the author: ");
+        scanf("%s",author);
+        find_book_by_author(author);
+    }
+    else if(choice == 7){
+        int year;
+        printf("Enter the year of publication: ");
+        scanf("%d",&year);
+        find_book_by_year(year);
     }
     else
     {

@@ -129,11 +129,10 @@ struct BookArray find_book_by_title (const char *title){
     BA.array = a;
     FILE *file = fopen("bookstore.txt","a+");
     if(!file){
-        //fprintf(stderr, "\nError opening file\n"); 
+        fprintf(stderr, "\nError opening file\n"); 
     }
     struct Book book;
     while(1){ 
-        printf("\n");
         if(!fread(&book, sizeof(struct Book), 1, file))
             break;   
         if(strcmp(book.title, title) == 0){
@@ -146,6 +145,58 @@ struct BookArray find_book_by_title (const char *title){
     }
     BA.length = i;
     printf("%u\n",BA.length);
-    printf("%s",BA.array[i-1].authors);
+    //printf("%s",BA.array[i-1].authors);
+    return BA;
+}
+struct BookArray find_book_by_author (const char *author){
+    char string[100];
+    int i=0;
+    struct BookArray BA;
+    struct Book a[n];
+    BA.array = a;
+    FILE *file = fopen("bookstore.txt","a+");
+    if(!file){
+        fprintf(stderr, "\nError opening file\n"); 
+    }
+    struct Book book;
+    while(1){ 
+        if(!fread(&book, sizeof(struct Book), 1, file))
+            break;   
+        if(strcmp(book.authors, author) == 0){
+            strcpy(a[i].title,book.title);
+            strcpy(a[i].authors,book.authors);
+            a[i].year  = book.year;
+            a[i].copies = book.copies;
+            i++;
+        }
+    }
+    BA.length = i;
+    printf("%u\n",BA.length);
+    return BA;
+}
+struct BookArray find_book_by_year (unsigned int year){
+    char string[100];
+    int i=0;
+    struct BookArray BA;
+    struct Book a[n];
+    BA.array = a;
+    FILE *file = fopen("bookstore.txt","a+");
+    if(!file){
+        fprintf(stderr, "\nError opening file\n"); 
+    }
+    struct Book book;
+    while(1){ 
+        if(!fread(&book, sizeof(struct Book), 1, file))
+            break;   
+        if(book.year == year){
+            strcpy(a[i].title,book.title);
+            strcpy(a[i].authors,book.authors);
+            a[i].year  = book.year;
+            a[i].copies = book.copies;
+            i++;
+        }
+    }
+    BA.length = i;
+    printf("%u\n",BA.length);
     return BA;
 }
