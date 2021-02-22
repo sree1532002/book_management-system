@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 #include <ctype.h>
 #define USER_MAX 50
 
@@ -12,6 +13,8 @@ typedef struct
     char user_name[26];
     char email[26];
     char password[26];
+    bool borrows;
+    char book[40];
 } User;
 
 //ser list[USER_MAX];
@@ -335,7 +338,7 @@ int main()
                 printf("3.Search books by Year of Publication\n");
                 printf("4.Borrow Books\n");
                 printf("5.Return Books\n");
-                printf("#. To exit\n");
+                printf("0. To exit\n");
                 printf("Enter your choice:\n");
                 scanf("%d", &c);
                 if (c == 1)
@@ -359,8 +362,10 @@ int main()
                     scanf("%d", &year);
                     find_book_by_year(year);
                 }
-                else if (c == '#')
+                else if (c == 0)
                 {
+                    break;
+                }else{
                     break;
                 }
             }
