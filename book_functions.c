@@ -3,9 +3,10 @@
 #include <string.h>
 #define n 50
 int m;
-int add_book(struct Book *book){
+int add_book(struct Book *book)
+{
     printf("Enter the book title: ");
-    scanf("%s",book->title);
+    scanf("%s", book->title);
     printf("Enter the list of authors as comma separated values: ");
     scanf("%s", book->authors);
     printf("Enter the year of publication: ");
@@ -13,7 +14,8 @@ int add_book(struct Book *book){
     printf("Enter the number of copies: ");
     scanf("%u", &(book->copies));
 }
-int store_books(FILE *file){
+int store_books(FILE *file)
+{
     struct Book book;
     /*
     char title[26], authors[26];
@@ -22,7 +24,7 @@ int store_books(FILE *file){
 */
     add_book(&book);
 
-/*
+    /*
     sprintf((char *)&book.year, "%d", book.year);
     sprintf((char *)&book.copies, "%d", book.copies);
 */
@@ -34,8 +36,6 @@ int store_books(FILE *file){
     fprintf(file, "\n");
     fprintf(file, "%u", book.copies);
     fprintf(file, "\n");
-
-
 }
 /*
 int stored_books(FILE *file)
@@ -88,7 +88,8 @@ int stored_books(FILE *file)
     return 0;
 }
 */
-int write_books(FILE *file){
+int write_books(FILE *file)
+{
     struct Book book;
     /*
     char title[26], authors[26];
@@ -96,10 +97,11 @@ int write_books(FILE *file){
     book.authors=authors;
 */
     add_book(&book);
-    fwrite (&book, sizeof(struct Book), 1, file); 
+    fwrite(&book, sizeof(struct Book), 1, file);
 }
 
-int load_books(FILE *file){
+int load_books(FILE *file)
+{
     char string[100];
     struct Book book;
     /*
@@ -107,17 +109,17 @@ int load_books(FILE *file){
     book.title = title;
     book.authors=authors;
     */
-    while(1){
-        
-    //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
-    
-   printf("\n");
+    while (1)
+    {
 
-   if(!fread(&book, sizeof(struct Book), 1, file))
-        break;
-        
-    printf("Title: %s\nAuthor: %s\n", book.title,book.authors);
-    printf("Year: %u\nCopies: %u\n", book.year, book.copies);
-    
+        //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
+
+        printf("\n");
+
+        if (!fread(&book, sizeof(struct Book), 1, file))
+            break;
+
+        printf("Title: %s\nAuthor: %s\n", book.title, book.authors);
+        printf("Year: %u\nCopies: %u\n", book.year, book.copies);
     }
 }
