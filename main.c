@@ -218,8 +218,6 @@ int main()
         printf("Enter the title: ");
         scanf("%s",title);
         find_book_by_title(title);
-    }else if(choice == 6){
-        
     }
     else if(choice == 6){
         char author[50];
