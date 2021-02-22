@@ -1,6 +1,7 @@
 #include "book_management.h"
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 #define n 50
 int m;
 int add_book(struct Book *book)
@@ -147,10 +148,16 @@ struct BookArray find_book_by_title (const char *title){
     }
     BA.length = i;
     printf("%u\n",BA.length);
-    printf("%s",BA.array[i-1].authors);
-    if(remove_book(BA.array[i-1])){
-        printf("Last searched book removed");
-    }
+    printf("%s",BA.array[i-1].title);
+   
+   int ch;
+   printf(" : \n1. BORROW\n2.DELETE\n#.NOthing\n");
+   scanf("%d", &ch);
+   if(ch==2)
+    remove_book(BA.array[i-1]);
+    else if(ch==1)
+    borrow_book(BA.array[i-1]);
+
     return BA;
 }
 struct BookArray find_book_by_author (const char *author){
@@ -252,3 +259,46 @@ int remove_book(struct Book book){
 
     return 0;
 }
+
+int borrow_book(struct Book book){
+    bool borrowed = false;
+    struct BookArray books;
+    struct Book elems[n], temp;
+    int i = 0;
+    books.array = elems;
+    books.length = 0;
+    FILE *file = fopen("bookstore.txt","a+");
+    if(!file){
+        fprintf(stderr, "\nError opening file\n"); 
+    }
+
+    while(1){ 
+        //printf("\n");
+        if(!fread(&temp, sizeof(struct Book), 1, file))
+            break;   
+
+        if((strcmp(book.title, temp.title) == 0) && (strcmp(book.authors, temp.authors) == 0) && (book.year == temp.year)){
+            temp.copies-=1;
+            borrowed = true;
+
+        }
+            strcpy(elems[i].title,temp.title);
+            strcpy(elems[i].authors, temp.authors);
+            elems[i].year  = temp.year;
+            elems[i].copies = temp.copies;
+            i++;
+            books.length = i;
+        
+    }
+    fclose(file);
+    if(borrowed == true){
+        printf("\n%s book has been borrowed.\n", book.title);
+    }
+
+    if(rewrite(books)){
+        return 1;
+    }
+
+    return 0;
+}
+
