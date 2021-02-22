@@ -145,7 +145,6 @@ struct BookArray find_book_by_title (const char *title){
     }
     BA.length = i;
     printf("%u\n",BA.length);
-    //printf("%s",BA.array[i-1].authors);
     printf("%s",BA.array[i-1].authors);
     if(remove_book(BA.array[i-1])){
         printf("Last searched book removed");
@@ -184,29 +183,70 @@ struct BookArray find_book_by_year (unsigned int year){
     struct BookArray BA;
     struct Book a[n];
     BA.array = a;
+    printf("%s",BA.array[i-1].authors);
+
+    return BA;
+}
+
+int rewrite(struct BookArray books){
+    FILE *file = fopen("tempbooks.txt","a+");
+    if(!file){
+        fprintf(stderr, "\nError opening file\n"); 
+    }
+    for(int i=0; i<books.length; i++){
+        if(!fwrite(&books.array[i], sizeof(struct Book), 1, file)){
+            fprintf(stderr, "\nError writing file\n");
+            return 0;
+        }
+    }
+
+    if(remove("bookstore.txt")==0){
+        rename("tempbooks.txt", "bookstore.txt");
+        return 1;
+    }
+    return 0;
+}
+
+//removes a book from the library
+//returns 0 if the book could be successfully removed, or an error code otherwise.
+int remove_book(struct Book book){
+    struct BookArray books;
+    struct Book elems[n], temp;
+    int i = 0;
+    books.array = elems;
+    books.length = 0;
     FILE *file = fopen("bookstore.txt","a+");
     if(!file){
         fprintf(stderr, "\nError opening file\n"); 
     }
+
     while(1){ 
         //printf("\n");
         if(!fread(&temp, sizeof(struct Book), 1, file))
             break;   
-        if(book.year == year){
+
+        if((strcmp(book.title, temp.title) == 0) && (strcmp(book.authors, temp.authors) == 0) && (book.year == temp.year)){
+            /*
             strcpy(a[i].title,book.title);
             strcpy(a[i].authors,book.authors);
             a[i].year  = book.year;
             a[i].copies = book.copies;
             i++;
+            */
            continue;
         }else{
             strcpy(elems[i].title,temp.title);
             strcpy(elems[i].authors, temp.authors);
             elems[i].year  = temp.year;
+            elems[i].copies = temp.copies;
             i++;
             books.length = i;
         }
     }
-    printf("%u\n",BA.length);
-    return BA;
+    fclose(file);
+    if(rewrite(books)){
+        return 1;
+    }
+
+    return 0;
 }
