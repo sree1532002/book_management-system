@@ -4,8 +4,8 @@
 #include <stdio.h>
 
 struct Book {
-		char *title; //book title
-		char *authors; //comma separated list of authors
+		char title[40]; //book title
+		char authors[40]; //comma separated list of authors
 		unsigned int year; // year of publication
 		unsigned int copies; //number of copies the library has
 };

@@ -203,7 +203,7 @@ int main()
         if(!file){
              fprintf(stderr, "\nError opening file\n"); 
         }
-        store_books(file);
+        write_books(file);
         fclose(file);
     }else if(4 == choice){
         FILE *file = fopen("bookstore.txt", "r");

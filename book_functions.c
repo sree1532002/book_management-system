@@ -15,10 +15,11 @@ int add_book(struct Book *book){
 }
 int store_books(FILE *file){
     struct Book book;
+    /*
     char title[26], authors[26];
     book.title = title;
     book.authors=authors;
-
+*/
     add_book(&book);
 
 /*
@@ -89,10 +90,11 @@ int stored_books(FILE *file)
 */
 int write_books(FILE *file){
     struct Book book;
+    /*
     char title[26], authors[26];
     book.title = title;
     book.authors=authors;
-
+*/
     add_book(&book);
     fwrite (&book, sizeof(struct Book), 1, file); 
 }
@@ -100,19 +102,20 @@ int write_books(FILE *file){
 int load_books(FILE *file){
     char string[100];
     struct Book book;
-    
+    /*
     char title[100], authors[100];
     book.title = title;
     book.authors=authors;
-    while(!feof(file)){
+    */
+    while(1){
         
-    fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
-    /*
+    //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
+    
    printf("\n");
 
    if(!fread(&book, sizeof(struct Book), 1, file))
         break;
-        */
+        
     printf("Title: %s\nAuthor: %s\n", book.title,book.authors);
     printf("Year: %u\nCopies: %u\n", book.year, book.copies);
     
