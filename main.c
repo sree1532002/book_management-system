@@ -345,11 +345,15 @@ int main()
                 scanf("%d", &c);
                 if (c == 1)
                 {
-                    borrow_a_book(u);
+                    if(borrow_a_book(u)){
+                        break;
+                    }
+                    
                 }
                 else if (c == 2)
                 {
-                    ;
+                    if(return_the_book(u))
+                        break;
                 }
                 else
                 {

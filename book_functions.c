@@ -449,7 +449,7 @@ int rewrite_users(User u){
          printf("%s, %s \n", arr[i].user_name, u.user_name);
         if(strcmp(arr[i].user_name, u.user_name)==0){
             //printf("\ndoing hssdfa\n");
-            arr[i].borrows = 1;
+            arr[i].borrows = u.borrows;
             strcpy(arr[i].book, u.book);
         }
         
@@ -582,9 +582,31 @@ int borrow_a_book(User u){
                         printf("\nBorrow details not changed in user page");
                     }
                 }
+            }else{
+                printf("\n Not enough copies to borrow from the library.\n");
             }
         }
 
     }while(ch==1 || ch==2 || ch==3);
+    return 0;
+}
+
+int return_the_book(User u){
+    if(u.borrows == 0){
+        printf("You have not borrowed any book to return. \n");
+        return 0;
+    }
+
+    struct BookArray arr = find_book_by_title(u.book);
+    printf("%d \n", arr.length);
+    if(return_book(arr.array[0])){
+        u.borrows=0;
+        strcpy(u.book, "");
+        if(rewrite_users(u)){
+            printf("\nUser details updated\n");
+            return 1;
+        }
+    }
+    
     return 0;
 }
