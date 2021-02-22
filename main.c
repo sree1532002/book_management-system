@@ -14,7 +14,7 @@ typedef struct
     char password[26];
 } User;
 
-User list[USER_MAX];
+//ser list[USER_MAX];
 
 char fileuser_name[] = "user.txt";
 
@@ -57,7 +57,7 @@ int exist(User u)
 
         //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
 
-        printf("\n");
+        //printf("\n");
 
         if (!fread(&temp, sizeof(User), 1, fp))
             break;
@@ -179,7 +179,7 @@ void registerUser()
     writeToFile(user);
 }
 
-int menu()
+/*int menu()
 {
     int choice;
     printf("1. Login\n");
@@ -193,11 +193,11 @@ int menu()
     printf("Enter your choice: ");
     scanf("%d", &choice);
     return choice;
-}
-
+}*/
+/*
 int main()
 {
-    User test[USER_MAX];
+    //User test[USER_MAX];
     FILE *fp = fopen(fileuser_name, "r");
     int i = 0;
     User u;
@@ -206,7 +206,7 @@ int main()
         printf("FILE NOT FOUND");
         return -1;
     }
-    /*while (1)
+    while (1)
     {
 
         //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
@@ -218,79 +218,161 @@ int main()
 
         printf("Username: %s\n", u.user_name);
         printf("Password: %s\n", u.password);
-    }*/
-    /*for (i = 0; i < USER_MAX; i++)
+    }
+    for (i = 0; i < USER_MAX; i++)
     {
         char uuser_name[10];
         char upassword[10];
-        
+
         fscanf(fp, "%s%s", uuser_name, upassword);
 
         strcpy(list[i].user_name, uuser_name);
         strcpy(list[i].password, upassword);
-    }*/
+    }
+    while (1)
+    {
+        int choice = menu();
+        if (1 == choice)
+        {
+            u = login();
+            if (1 == exist(u))
+            {
+                printf("Success");
+            }
+            else
+            {
+                printf("Wrong username or password/Please register before logging in");
+            }
+        }
+        else if (2 == choice)
+        {
+            registerUser();
+        }
+        else if (3 == choice)
+        {
+            FILE *file = fopen("bookstore.txt", "a+");
+            if (!file)
+            {
+                fprintf(stderr, "\nError opening file\n");
+            }
+            write_books(file);
+            fclose(file);
+        }
+        else if (4 == choice)
+        {
+            FILE *file = fopen("bookstore.txt", "r");
+            if (!file)
+            {
+                fprintf(stderr, "\nError opening file\n");
+            }
+            load_books(file);
+            fclose(file);
+        }
+        else if (choice == 5)
+        {
+            char title[50];
+            printf("Enter the title: ");
+            scanf("%s", title);
+            find_book_by_title(title);
+        }
+        else if (choice == 6)
+        {
+            char author[50];
+            printf("Enter the author: ");
+            scanf("%s", author);
+            find_book_by_author(author);
+        }
+        else if (choice == 7)
+        {
+            int year;
+            printf("Enter the year of publication: ");
+            scanf("%d", &year);
+            find_book_by_year(year);
+        }
+        else if (choice == '#')
+        {
+            break;
+        }
+        else
+        {
+            fclose(fp);
+        }
+        return 0;
+    }
+}*/
 
-    int choice = menu();
-    if (1 == choice)
+int main()
+{
+    FILE *fp = fopen(fileuser_name, "r");
+    int i = 0;
+    User u;
+    if (NULL == fp)
+    {
+        printf("FILE NOT FOUND");
+        return -1;
+    }
+    int choice = 0;
+    printf("Welcome to the library! \n");
+    printf("1.Register\n");
+    printf("2.User Login\n");
+    printf("3.Admin Login\n");
+    scanf("%d", &choice);
+    if (choice == 1)
+    {
+        registerUser();
+    }
+    else if (choice == 2)
     {
         u = login();
         if (1 == exist(u))
         {
-            printf("Success");
+            int c = 0;
+            printf("Success\n");
+            while (1)
+            {
+                printf("1.Search books by Title\n");
+                printf("2.Search books by Authors\n");
+                printf("3.Search books by Year of Publication\n");
+                printf("4.Borrow Books\n");
+                printf("5.Return Books\n");
+                printf("#. To exit\n");
+                printf("Enter your choice:\n");
+                scanf("%d", &c);
+                if (c == 1)
+                {
+                    char title[50];
+                    printf("Enter the title: ");
+                    scanf("%s", title);
+                    find_book_by_title(title);
+                }
+                else if (c == 2)
+                {
+                    char author[50];
+                    printf("Enter the author: ");
+                    scanf("%s", author);
+                    find_book_by_author(author);
+                }
+                else if (c == 3)
+                {
+                    int year;
+                    printf("Enter the year of publication: ");
+                    scanf("%d", &year);
+                    find_book_by_year(year);
+                }
+                else if (c == '#')
+                {
+                    break;
+                }
+            }
         }
         else
         {
             printf("Wrong username or password/Please register before logging in");
         }
     }
-    else if (2 == choice)
+    else if (choice == 3)
     {
-        registerUser();
+        printf("1.Add Books\n");
+        printf("2.Remove books\n");
     }
-    else if (3 == choice)
-    {
-        FILE *file = fopen("bookstore.txt", "a+");
-        if (!file)
-        {
-            fprintf(stderr, "\nError opening file\n");
-        }
-        write_books(file);
-        fclose(file);
-    }
-    else if (4 == choice)
-    {
-        FILE *file = fopen("bookstore.txt", "r");
-        if (!file)
-        {
-            fprintf(stderr, "\nError opening file\n");
-        }
-        load_books(file);
-        fclose(file);
-    }
-    else if (choice == 5)
-    {
-        char title[50];
-        printf("Enter the title: ");
-        scanf("%s", title);
-        find_book_by_title(title);
-    }
-    else if (choice == 6)
-    {
-        char author[50];
-        printf("Enter the author: ");
-        scanf("%s", author);
-        find_book_by_author(author);
-    }
-    else if (choice == 7)
-    {
-        int year;
-        printf("Enter the year of publication: ");
-        scanf("%d", &year);
-        find_book_by_year(year);
-    }
-    else
-    {
-        fclose(fp);
-    }
-    return 0;
 }

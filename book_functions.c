@@ -124,92 +124,106 @@ int load_books(FILE *file)
         printf("Year: %u\nCopies: %u\n", book.year, book.copies);
     }
 }
-struct BookArray find_book_by_title (const char *title){
+struct BookArray find_book_by_title(const char *title)
+{
     char string[100];
-    int i=0;
+    int i = 0;
     struct BookArray BA;
     struct Book a[n];
     BA.array = a;
-    FILE *file = fopen("bookstore.txt","a+");
-    if(!file){
-        fprintf(stderr, "\nError opening file\n"); 
+    FILE *file = fopen("bookstore.txt", "a+");
+    if (!file)
+    {
+        fprintf(stderr, "\nError opening file\n");
     }
     struct Book book;
-    while(1){ 
-        if(!fread(&book, sizeof(struct Book), 1, file))
-            break;   
-        if(strcmp(book.title, title) == 0){
-            strcpy(a[i].title,book.title);
-            strcpy(a[i].authors,book.authors);
-            a[i].year  = book.year;
+    while (1)
+    {
+        if (!fread(&book, sizeof(struct Book), 1, file))
+            break;
+        if (strcmp(book.title, title) == 0)
+        {
+            strcpy(a[i].title, book.title);
+            strcpy(a[i].authors, book.authors);
+            a[i].year = book.year;
             a[i].copies = book.copies;
             i++;
         }
     }
     BA.length = i;
-    printf("%u\n",BA.length);
-    printf("%s",BA.array[i-1].title);
-   
-   int ch;
-   printf(" : \n1. BORROW\n2.DELETE\n#.NOthing\n");
-   scanf("%d", &ch);
-   if(ch==2)
-    remove_book(BA.array[i-1]);
-    else if(ch==1)
-    borrow_book(BA.array[i-1]);
+    printf("%u\n", BA.length);
+    printf("%s", BA.array[i - 1].title);
+
+    int ch;
+    printf(" : \n1. BORROW\n2.DELETE\n#.NOthing\n");
+    scanf("%d", &ch);
+    if (ch == 2)
+        remove_book(BA.array[i - 1]);
+    else if (ch == 1)
+        borrow_book(BA.array[i - 1]);
 
     return BA;
 }
-struct BookArray find_book_by_author (const char *author){
+struct BookArray find_book_by_author(const char *author)
+{
     char string[100];
-    int i=0;
+    int i = 0;
     struct BookArray BA;
     struct Book a[n];
     BA.array = a;
-    FILE *file = fopen("bookstore.txt","a+");
-    if(!file){
-        fprintf(stderr, "\nError opening file\n"); 
+    FILE *file = fopen("bookstore.txt", "a+");
+    if (!file)
+    {
+        fprintf(stderr, "\nError opening file\n");
     }
     struct Book book;
-    while(1){ 
-        if(!fread(&book, sizeof(struct Book), 1, file))
-            break;   
-        if(strcmp(book.authors, author) == 0){
-            strcpy(a[i].title,book.title);
-            strcpy(a[i].authors,book.authors);
-            a[i].year  = book.year;
+    while (1)
+    {
+        if (!fread(&book, sizeof(struct Book), 1, file))
+            break;
+        if (strcmp(book.authors, author) == 0)
+        {
+            strcpy(a[i].title, book.title);
+            strcpy(a[i].authors, book.authors);
+            a[i].year = book.year;
             a[i].copies = book.copies;
             i++;
         }
     }
     BA.length = i;
-    printf("%u\n",BA.length);
+    printf("%u\n", BA.length);
     return BA;
 }
-struct BookArray find_book_by_year (unsigned int year){
+struct BookArray find_book_by_year(unsigned int year)
+{
     char string[100];
-    int i=0;
+    int i = 0;
     struct BookArray BA;
     struct Book a[n];
     BA.array = a;
-    printf("%s",BA.array[i-1].authors);
+    printf("%s", BA.array[i - 1].authors);
 
     return BA;
 }
 
-int rewrite(struct BookArray books){
-    FILE *file = fopen("tempbooks.txt","a+");
-    if(!file){
-        fprintf(stderr, "\nError opening file\n"); 
+int rewrite(struct BookArray books)
+{
+    FILE *file = fopen("tempbooks.txt", "a+");
+    if (!file)
+    {
+        fprintf(stderr, "\nError opening file\n");
     }
-    for(int i=0; i<books.length; i++){
-        if(!fwrite(&books.array[i], sizeof(struct Book), 1, file)){
+    for (int i = 0; i < books.length; i++)
+    {
+        if (!fwrite(&books.array[i], sizeof(struct Book), 1, file))
+        {
             fprintf(stderr, "\nError writing file\n");
             return 0;
         }
     }
 
-    if(remove("bookstore.txt")==0){
+    if (remove("bookstore.txt") == 0)
+    {
         rename("tempbooks.txt", "bookstore.txt");
         return 1;
     }
@@ -218,23 +232,27 @@ int rewrite(struct BookArray books){
 
 //removes a book from the library
 //returns 0 if the book could be successfully removed, or an error code otherwise.
-int remove_book(struct Book book){
+int remove_book(struct Book book)
+{
     struct BookArray books;
     struct Book elems[n], temp;
     int i = 0;
     books.array = elems;
     books.length = 0;
-    FILE *file = fopen("bookstore.txt","a+");
-    if(!file){
-        fprintf(stderr, "\nError opening file\n"); 
+    FILE *file = fopen("bookstore.txt", "a+");
+    if (!file)
+    {
+        fprintf(stderr, "\nError opening file\n");
     }
 
-    while(1){ 
+    while (1)
+    {
         //printf("\n");
-        if(!fread(&temp, sizeof(struct Book), 1, file))
-            break;   
+        if (!fread(&temp, sizeof(struct Book), 1, file))
+            break;
 
-        if((strcmp(book.title, temp.title) == 0) && (strcmp(book.authors, temp.authors) == 0) && (book.year == temp.year)){
+        if ((strcmp(book.title, temp.title) == 0) && (strcmp(book.authors, temp.authors) == 0) && (book.year == temp.year))
+        {
             /*
             strcpy(a[i].title,book.title);
             strcpy(a[i].authors,book.authors);
@@ -242,63 +260,69 @@ int remove_book(struct Book book){
             a[i].copies = book.copies;
             i++;
             */
-           continue;
-        }else{
-            strcpy(elems[i].title,temp.title);
+            continue;
+        }
+        else
+        {
+            strcpy(elems[i].title, temp.title);
             strcpy(elems[i].authors, temp.authors);
-            elems[i].year  = temp.year;
+            elems[i].year = temp.year;
             elems[i].copies = temp.copies;
             i++;
             books.length = i;
         }
     }
     fclose(file);
-    if(rewrite(books)){
+    if (rewrite(books))
+    {
         return 1;
     }
 
     return 0;
 }
 
-int borrow_book(struct Book book){
+int borrow_book(struct Book book)
+{
     bool borrowed = false;
     struct BookArray books;
     struct Book elems[n], temp;
     int i = 0;
     books.array = elems;
     books.length = 0;
-    FILE *file = fopen("bookstore.txt","a+");
-    if(!file){
-        fprintf(stderr, "\nError opening file\n"); 
+    FILE *file = fopen("bookstore.txt", "a+");
+    if (!file)
+    {
+        fprintf(stderr, "\nError opening file\n");
     }
 
-    while(1){ 
+    while (1)
+    {
         //printf("\n");
-        if(!fread(&temp, sizeof(struct Book), 1, file))
-            break;   
+        if (!fread(&temp, sizeof(struct Book), 1, file))
+            break;
 
-        if((strcmp(book.title, temp.title) == 0) && (strcmp(book.authors, temp.authors) == 0) && (book.year == temp.year)){
-            temp.copies-=1;
+        if ((strcmp(book.title, temp.title) == 0) && (strcmp(book.authors, temp.authors) == 0) && (book.year == temp.year))
+        {
+            temp.copies -= 1;
             borrowed = true;
-
         }
-            strcpy(elems[i].title,temp.title);
-            strcpy(elems[i].authors, temp.authors);
-            elems[i].year  = temp.year;
-            elems[i].copies = temp.copies;
-            i++;
-            books.length = i;
-        
+        strcpy(elems[i].title, temp.title);
+        strcpy(elems[i].authors, temp.authors);
+        elems[i].year = temp.year;
+        elems[i].copies = temp.copies;
+        i++;
+        books.length = i;
     }
     fclose(file);
-    if(borrowed == true){
+    if (borrowed == true)
+    {
         printf("\n%s book has been borrowed.\n", book.title);
     }
 
-    if(rewrite(books)){
+    if (rewrite(books))
+    {
         return 1;
     }
 
     return 0;
 }
-
