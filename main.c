@@ -84,6 +84,8 @@ void registerUser()
     char user_name[26];
     char password[26];
     User user;
+    FILE *fp = fopen(fileuser_name, "r");
+    User temp;
     int i;
     int count = 0, pcount = 0, c1 = 0, c2 = 0;
     printf("Enter your name(max 25):");
@@ -125,14 +127,29 @@ void registerUser()
     }
     strcpy(user.user_name, user_name);
 
-    for (i = 0; i < USER_MAX; i++)
+    while (1)
+    {
+
+        printf("\n");
+
+        if (!fread(&temp, sizeof(User), 1, fp))
+            break;
+
+        if (0 == strcmp(temp.user_name, user.user_name))
+        {
+            printf("USER ALREADY EXIST");
+            return;
+        }
+    }
+
+    /*for (i = 0; i < USER_MAX; i++)
     {
         if (0 == strcmp(list[i].user_name, user_name))
         {
             printf("USER ALREADY EXIST");
             return;
         }
-    }
+    }*/
     printf("Enter your password containing only alphanumeric characters with atleast one uppercase and atleast one special character(max 25):");
     scanf("%s", password);
     for (i = 0; i < strlen(password); i++)
@@ -189,7 +206,7 @@ int main()
         printf("FILE NOT FOUND");
         return -1;
     }
-    while (1)
+    /*while (1)
     {
 
         //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
@@ -201,7 +218,7 @@ int main()
 
         printf("Username: %s\n", u.user_name);
         printf("Password: %s\n", u.password);
-    }
+    }*/
     /*for (i = 0; i < USER_MAX; i++)
     {
         char uuser_name[10];
