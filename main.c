@@ -365,7 +365,9 @@ int main()
                 else if (c == 0)
                 {
                     break;
-                }else{
+                }
+                else
+                {
                     break;
                 }
             }
@@ -377,8 +379,53 @@ int main()
     }
     else if (choice == 3)
     {
-        printf("1.Add Books\n");
-        printf("2.Remove books\n");
-        printf("3.Load All the books\n");
+        int c = 0;
+        char adus[40];
+        char adp[40];
+        printf("Enter Admin Username: \n");
+        scanf("%s", &adus);
+        printf("Enter Password: \n");
+        scanf("%s", &adp);
+        if ((strcmp(adus, "Administrator1$") == 0) && (strcmp(adp, "Minerva") == 0))
+        {
+            printf("Login Successful!\n");
+            while (1)
+            {
+                printf("1.Add Books\n");
+                printf("2.Remove books\n");
+                printf("3.Load All the books\n");
+                printf("0.To exit \n");
+                printf("Enter your choice: \n");
+                scanf("%d", &c);
+                if (c == 1)
+                {
+                    FILE *file = fopen("bookstore.txt", "a+");
+                    if (!file)
+                    {
+                        fprintf(stderr, "\nError opening file\n");
+                    }
+                    write_books(file);
+                    fclose(file);
+                }
+                else if (c == 3)
+                {
+                    FILE *file = fopen("bookstore.txt", "r");
+                    if (!file)
+                    {
+                        fprintf(stderr, "\nError opening file\n");
+                    }
+                    load_books(file);
+                    fclose(file);
+                }
+                else
+                {
+                    break;
+                }
+            }
+        }
+        else
+        {
+            printf("Invalid Admin Credentials\n");
+        }
     }
 }
