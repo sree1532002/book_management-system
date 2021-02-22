@@ -160,12 +160,13 @@ struct BookArray find_book_by_year (unsigned int year){
 
 int rewrite(struct BookArray books)
 {
+    int i;
     FILE *file = fopen("tempbooks.txt", "a+");
     if (!file)
     {
         fprintf(stderr, "\nError opening file\n");
     }
-    for (int i = 0; i < books.length; i++)
+    for ( i = 0; i < books.length; i++)
     {
         if (!fwrite(&books.array[i], sizeof(struct Book), 1, file))
         {
@@ -456,7 +457,7 @@ int borrow_a_book(User u){
                     u.borrows = 1;
                     strcpy(u.book, books.array[bookno-1].title);
                     if(rewrite_users(u)){
-                        printf("\nUser details updated\n");
+                        printf("User details updated\n");
                         ch=0;
                         free(books.array);
                         return 1;
@@ -496,3 +497,5 @@ int return_the_book(User u){
     
     return 0;
 }
+
+

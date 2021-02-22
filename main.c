@@ -190,7 +190,7 @@ int main()
         if (1 == exist(&u))
         {
             int c = 0;
-            printf("Success\n");
+            printf("\nLogged in Successfully\n");
             while (1)
             {
                 printf("1. Borrow Books\n");
@@ -198,6 +198,7 @@ int main()
                 printf("0. To Exit\n");
                 printf("Enter your choice: ");
                 scanf("%d", &c);
+                printf("\n");
                 if (c == 1)
                 {
                     if(borrow_a_book(u)){
@@ -241,6 +242,7 @@ int main()
                 printf("0. To Exit \n");
                 printf("Enter your choice: ");
                 scanf("%d", &c);
+                printf("\n");
                 if (c == 1)
                 {
                     FILE *file = fopen("bookstore.txt", "a+");
