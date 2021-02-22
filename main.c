@@ -114,11 +114,11 @@ void registerUser()
         }
         if (email[i] == '.')
         {
-            if (email[i + 1] == 'c' && email[i + 2] == 'o' && email[i + 3] == 'm' && email[i + 4] == '\0')
+           // if (email[i + 1] == 'c' && email[i + 2] == 'o' && email[i + 3] == 'm' && email[i + 4] == '\0')
                 count++;
         }
     }
-    if (count != 2)
+    if (count < 2)
     {
         printf("Invalid email id\n");
         exit(0);

@@ -154,7 +154,7 @@ struct BookArray find_book_by_title(const char *title)
     {
         if (!fread(&book, sizeof(struct Book), 1, file))
             break;
-        if (strcmp(book.title, title) == 0)
+        if (strstr(book.title, title) != NULL)
         {
             found = true;
             strcpy(a[i].title, book.title);
@@ -198,7 +198,7 @@ struct BookArray find_book_by_author(const char *author)
     {
         if (!fread(&book, sizeof(struct Book), 1, file))
             break;
-        if (strcmp(book.authors, author) == 0)
+        if (strstr(book.authors, author) != NULL)
         {
             strcpy(a[i].title, book.title);
             strcpy(a[i].authors, book.authors);
@@ -446,7 +446,7 @@ int rewrite_users(User u){
    
     for( i=0; i<usernos; i++){
         fread(&arr[i], sizeof(User), 1, fr);
-         printf("%s, %s \n", arr[i].user_name, u.user_name);
+        // printf("%s, %s \n", arr[i].user_name, u.user_name);
         if(strcmp(arr[i].user_name, u.user_name)==0){
             //printf("\ndoing hssdfa\n");
             arr[i].borrows = u.borrows;
@@ -475,7 +475,7 @@ int rewrite_users(User u){
 
      if (remove("user.txt") == 0)
     {
-        printf("removed\n");
+      //  printf("removed\n");
         if(rename("tempusers.txt", "user.txt")==0){
             printf("\nRename successfully");
             return 1;
