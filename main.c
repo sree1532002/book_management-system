@@ -7,15 +7,7 @@
 #include <ctype.h>
 #define USER_MAX 50
 
-typedef struct
-{
-    char name[26];
-    char user_name[26];
-    char email[26];
-    char password[26];
-    int borrows;
-    char book[40];
-} User;
+
 
 //ser list[USER_MAX];
 
@@ -32,6 +24,7 @@ User login()
     printf("Enter Password: ");
     scanf("%s", password);
     strcpy(lg.password, password);
+
     return lg;
 }
 
@@ -50,7 +43,7 @@ void writeToFile(User u)
     fclose(fw);
 }
 
-int exist(User u)
+int exist(User *u)
 {
     int i;
     FILE *fp = fopen(fileuser_name, "r");
@@ -65,8 +58,19 @@ int exist(User u)
         if (!fread(&temp, sizeof(User), 1, fp))
             break;
 
-        if (0 == strcmp(temp.user_name, u.user_name) && 0 == strcmp(temp.password, u.password))
+        if (0 == strcmp(temp.user_name, u->user_name) && 0 == strcmp(temp.password, u->password))
         {
+             //char name[26];
+    //char user_name[26];
+    //char email[26];
+    //char password[26];
+    //int borrows;
+    //char book[40];
+
+            u->borrows = temp.borrows;
+            strcpy(u->name, temp.name);
+            strcpy(u->email, temp.email);
+            strcpy(u->book, temp.book);
             return 1;
         }
     }
@@ -177,7 +181,7 @@ void registerUser()
         }
     }
     strcpy(user.password, password);
-    user.borrows=false;
+    user.borrows=0;
     writeToFile(user);
 }
 
@@ -328,7 +332,7 @@ int main()
     else if (choice == 2)
     {
         u = login();
-        if (1 == exist(u))
+        if (1 == exist(&u))
         {
             int c = 0;
             printf("Success\n");
@@ -341,7 +345,7 @@ int main()
                 scanf("%d", &c);
                 if (c == 1)
                 {
-                    ;
+                    borrow_a_book(u);
                 }
                 else if (c == 2)
                 {
@@ -364,10 +368,10 @@ int main()
         char adus[40];
         char adp[40];
         printf("Enter Admin Username: ");
-        scanf("%s", &adus);
+        scanf("%s", adus);
         printf("Enter Password: ");
-        scanf("%s", &adp);
-        if ((strcmp(adus, "Administrator1$") == 0) && (strcmp(adp, "Minerva") == 0))
+        scanf("%s", adp);
+        if ((strcmp(adus, "admin") == 0) && (strcmp(adp, "admin") == 0))
         {
             printf("Login Successful!\n");
             while (1)

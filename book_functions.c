@@ -5,6 +5,17 @@
 #include <stdbool.h>
 #define n 50
 int m;
+
+typedef struct
+{
+    char name[26];
+    char user_name[26];
+    char email[26];
+    char password[26];
+    int borrows;
+    char book[40];
+} User;
+
 int add_book(struct Book *book)
 {
     printf("Enter the book title: ");
@@ -154,6 +165,7 @@ struct BookArray find_book_by_title(const char *title)
         }
     }
     BA.length = i;
+    /*
     printf("%u\n", BA.length);
     printf("%s", BA.array[i - 1].title);
 
@@ -166,7 +178,7 @@ struct BookArray find_book_by_title(const char *title)
     else if (ch == 1)
         borrow_book(BA.array[i - 1]);
     }
-
+    */
     return BA;
 }
 struct BookArray find_book_by_author(const char *author)
@@ -196,7 +208,7 @@ struct BookArray find_book_by_author(const char *author)
         }
     }
     BA.length = i;
-    printf("%u\n", BA.length);
+    //printf("%u\n", BA.length);
     return BA;
 }
 
@@ -224,7 +236,7 @@ struct BookArray find_book_by_year (unsigned int year){
         }
     }
     BA.length = i;
-    printf("%u\n",BA.length);
+    //printf("%u\n",BA.length);
     return BA;
 }
 
@@ -316,6 +328,7 @@ int borrow_book(struct Book book)
     if (!file)
     {
         fprintf(stderr, "\nError opening file\n");
+        return 0;
     }
 
     while (1)
@@ -339,14 +352,13 @@ int borrow_book(struct Book book)
     fclose(file);
     if (borrowed == true)
     {
-        printf("\n%s book has been borrowed.\n", book.title);
-    }
-
+        
     if (rewrite(books))
     {
+        printf("\n%s book has been borrowed.\n", book.title);
         return 1;
     }
-
+    }
     return 0;
 }
 
@@ -393,5 +405,186 @@ int return_book(struct Book book)
         return 1;
     }
 
+    return 0;
+}
+
+int rewrite_users(User u){
+    FILE *fr = fopen("user.txt", "r");
+     FILE *fw = fopen("tempusers.txt", "a+");
+    if (!fw)
+    {
+        fprintf(stderr, "\nFile write error opening file\n");
+        return 0;
+    }
+    if (!fr)
+    {
+        fprintf(stderr, "\nFile read error opening file\n");
+        return 0;
+    }
+
+    fseek(fr, 0L, SEEK_END);
+    long int final = ftell(fr);
+    int usernos = final/sizeof(User);
+    fclose(fr);
+
+    fr=fopen("user.txt", "r");
+    if (!fr)
+    {
+        fprintf(stderr, "\nFile read error opening file\n");
+        return 0;
+    }
+
+    User *arr = (User *) malloc(usernos * sizeof(User));
+
+    if(!arr){
+        printf("malloc error \n");
+        return 0;
+    }
+    int i;
+    
+
+   
+    for( i=0; i<usernos; i++){
+        fread(&arr[i], sizeof(User), 1, fr);
+         printf("%s, %s \n", arr[i].user_name, u.user_name);
+        if(strcmp(arr[i].user_name, u.user_name)==0){
+            //printf("\ndoing hssdfa\n");
+            arr[i].borrows = 1;
+            strcpy(arr[i].book, u.book);
+        }
+        
+    }
+/*
+    for(i=0; i<usernos; i++){
+        printf("username = %s, borrows = %d, book = %s\n", arr[i].name, arr[i].borrows, arr[i].book);
+    }
+    */
+    for(i=0; i<usernos; i++){
+        fwrite(&arr[i], sizeof(User), 1, fw);
+        //printf("%s, %s \n", arr[i].user_name, u.user_name);
+        /*
+         if(strcmp(arr[i].user_name, u.user_name)==0){
+            printf("\n writing shit hssdfa\n");
+         }
+         */
+        
+    }
+    
+    fclose(fw);
+    fclose(fr);
+
+     if (remove("user.txt") == 0)
+    {
+        printf("removed\n");
+        if(rename("tempusers.txt", "user.txt")==0){
+            printf("\nRename successfully");
+            return 1;
+        }else{
+            printf("\nnot renamed ");
+            return 0;
+        }
+        
+    }else{
+        printf("not removed\n");
+    }
+
+    //printf("%d Usernos.\n", usernos);
+
+    /*
+    for ( i = 0; i < usernos; i++){
+        if (!fwrite(&books.array[i], sizeof(struct Book), 1, file))
+        {
+            fprintf(stderr, "\nError writing file\n");
+            return 0;
+        }
+    }
+    fclose(file);
+
+    if (remove("bookstore.txt") == 0)
+    {
+        rename("tempbooks.txt", "bookstore.txt");
+        return 1;
+    }
+    return 0;
+    */
+   return 0;
+}
+
+int borrow_a_book(User u){
+    if(u.borrows==1){
+        printf("You have already borrowed the book %s, return the book to borrow another.\n", u.book);
+        return 0;
+    }
+
+    int ch=0, temp;
+    char string[40];
+    struct BookArray books;
+    do{
+        printf("Search the book:\n");
+         printf("1. Find book by title\n");
+         printf("2. Find book by author\n");
+         printf("3. Find book by year\n");
+         printf("0.Exit\n");
+         printf("Enter your choice(1-3): ");
+
+         scanf("%d", &ch);
+
+         switch(ch){
+            case 1: 
+                printf("Enter the title: ");
+                scanf("%s", string);
+                books = find_book_by_title(string);
+                break;
+
+            case 2:
+                printf("Enter the author: ");
+                scanf("%s", string);
+                books = find_book_by_author(string);
+                break;
+
+            case 3:
+                 printf("Enter the year of publication: ");
+                scanf("%d", &temp);
+                books = find_book_by_year(temp);
+                break;
+
+            default:
+                break;
+         }
+         if(ch==0)
+            break;
+
+        if(books.length==0){
+            printf("No books are found.\n");
+            break;
+        }else{
+            int i=0;
+            int bookno;
+            for(i=0; i<books.length; i++){
+                printf("Book No. : %d\n", i+1);
+                printf("Title: %s\nAuthor: %s\n", books.array[i].title, books.array[i].authors);
+                printf("Year: %u\nCopies: %u\n", books.array[i].year, books.array[i].copies);
+            }
+
+            printf("Enter the book you want to borrow: ");
+            scanf("%d", &bookno);
+
+            if(books.array[bookno-1].copies>=1){
+                if(borrow_book(books.array[bookno-1])){
+                    u.borrows = 1;
+                    strcpy(u.book, books.array[bookno-1].title);
+                    if(rewrite_users(u)){
+                        printf("\nUser details updated\n");
+                        ch=0;
+                        return 1;
+            
+                    }else{
+                        printf("\nBorrow details not changed in user page");
+                    }
+                }
+            }
+        }
+
+    }while(ch==1 || ch==2 || ch==3);
     return 0;
 }
