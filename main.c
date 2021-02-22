@@ -22,7 +22,7 @@ User list[USER_MAX];
 char fileuser_name[] = "user.txt";
 // user.txt need to create a file in your application directory
 
-
+// A's comment
 // Log function
 User login()
 {
