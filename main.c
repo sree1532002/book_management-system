@@ -8,10 +8,9 @@
 #define USER_MAX 50
 
 
-
-//ser list[USER_MAX];
-
 char fileuser_name[] = "user.txt";
+
+//function that gets the username and password required for logging in
 
 User login()
 {
@@ -28,20 +27,18 @@ User login()
     return lg;
 }
 
+// function that writes the user-details into a file
+
 void writeToFile(User u)
 {
 
     FILE *fw = fopen(fileuser_name, "a+");
     fwrite(&u, sizeof(User), 1, fw);
 
-    /* fprintf(fw, "%s", u.user_name);
-
-    fprintf(fw, "\t");
-    fprintf(fw, "%s", u.password);
-
-    fprintf(fw, "\n");*/
     fclose(fw);
 }
+
+//Function that checks whether a particular user exists in the directory
 
 int exist(User *u)
 {
@@ -51,22 +48,12 @@ int exist(User *u)
     while (1)
     {
 
-        //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
-
-        //printf("\n");
 
         if (!fread(&temp, sizeof(User), 1, fp))
             break;
 
         if (0 == strcmp(temp.user_name, u->user_name) && 0 == strcmp(temp.password, u->password))
         {
-             //char name[26];
-    //char user_name[26];
-    //char email[26];
-    //char password[26];
-    //int borrows;
-    //char book[40];
-
             u->borrows = temp.borrows;
             strcpy(u->name, temp.name);
             strcpy(u->email, temp.email);
@@ -74,15 +61,11 @@ int exist(User *u)
             return 1;
         }
     }
-    /*for (i = 0; i < USER_MAX; i++)
-    {
-        if (0 == strcmp(list[i].user_name, u.user_name) && 0 == strcmp(list[i].password, u.password))
-        {
-            return 1;
-        }
-    }*/
+  
     return -1;
 }
+
+//Function to register a new user
 
 void registerUser()
 {
@@ -114,7 +97,6 @@ void registerUser()
         }
         if (email[i] == '.')
         {
-           // if (email[i + 1] == 'c' && email[i + 2] == 'o' && email[i + 3] == 'm' && email[i + 4] == '\0')
                 count++;
         }
     }
@@ -147,14 +129,7 @@ void registerUser()
         }
     }
 
-    /*for (i = 0; i < USER_MAX; i++)
-    {
-        if (0 == strcmp(list[i].user_name, user_name))
-        {
-            printf("USER ALREADY EXIST");
-            return;
-        }
-    }*/
+   
     printf("Enter your password containing only alphanumeric characters with atleast one uppercase and atleast one special character(max 25): ");
     scanf("%s", password);
     for (i = 0; i < strlen(password); i++)
@@ -185,127 +160,7 @@ void registerUser()
     writeToFile(user);
 }
 
-/*int menu()
-{
-    int choice;
-    printf("1. Login\n");
-    printf("2. Register\n");
-    printf("3. Store\n");
-    printf("4. Load\n");
-    printf("5. Find book by title\n");
-    printf("6. Find book by author\n");
-    printf("7. Find book by year\n");
-    printf("#. Exit\n");
-    printf("Enter your choice: ");
-    scanf("%d", &choice);
-    return choice;
-}*/
-/*
-int main()
-{
-    //User test[USER_MAX];
-    FILE *fp = fopen(fileuser_name, "r");
-    int i = 0;
-    User u;
-    if (NULL == fp)
-    {
-        printf("FILE NOT FOUND");
-        return -1;
-    }
-    while (1)
-    {
-
-        //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
-
-        printf("\n");
-
-        if (!fread(&u, sizeof(User), 1, fp))
-            break;
-
-        printf("Username: %s\n", u.user_name);
-        printf("Password: %s\n", u.password);
-    }
-    for (i = 0; i < USER_MAX; i++)
-    {
-        char uuser_name[10];
-        char upassword[10];
-
-        fscanf(fp, "%s%s", uuser_name, upassword);
-
-        strcpy(list[i].user_name, uuser_name);
-        strcpy(list[i].password, upassword);
-    }
-    while (1)
-    {
-        int choice = menu();
-        if (1 == choice)
-        {
-            u = login();
-            if (1 == exist(u))
-            {
-                printf("Success");
-            }
-            else
-            {
-                printf("Wrong username or password/Please register before logging in");
-            }
-        }
-        else if (2 == choice)
-        {
-            registerUser();
-        }
-        else if (3 == choice)
-        {
-            FILE *file = fopen("bookstore.txt", "a+");
-            if (!file)
-            {
-                fprintf(stderr, "\nError opening file\n");
-            }
-            write_books(file);
-            fclose(file);
-        }
-        else if (4 == choice)
-        {
-            FILE *file = fopen("bookstore.txt", "r");
-            if (!file)
-            {
-                fprintf(stderr, "\nError opening file\n");
-            }
-            load_books(file);
-            fclose(file);
-        }
-        else if (choice == 5)
-        {
-            char title[50];
-            printf("Enter the title: ");
-            scanf("%s", title);
-            find_book_by_title(title);
-        }
-        else if (choice == 6)
-        {
-            char author[50];
-            printf("Enter the author: ");
-            scanf("%s", author);
-            find_book_by_author(author);
-        }
-        else if (choice == 7)
-        {
-            int year;
-            printf("Enter the year of publication: ");
-            scanf("%d", &year);
-            find_book_by_year(year);
-        }
-        else if (choice == '#')
-        {
-            break;
-        }
-        else
-        {
-            fclose(fp);
-        }
-        return 0;
-    }
-}*/
+//Driver Function
 
 int main()
 {
@@ -393,7 +248,7 @@ int main()
                     {
                         fprintf(stderr, "\nError opening file\n");
                     }
-                    write_books(file);
+                    store_books(file);
                     fclose(file);
                 }
                 else if (c == 3)

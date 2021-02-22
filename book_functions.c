@@ -6,6 +6,9 @@
 #define n 50
 int m;
 
+/*
+    A structure to store user details.
+*/
 typedef struct
 {
     char name[26];
@@ -16,6 +19,7 @@ typedef struct
     char book[40];
 } User;
 
+//A helping function to add the details of a book to the library
 int add_book(struct Book *book)
 {
     printf("Enter the book title: ");
@@ -26,109 +30,30 @@ int add_book(struct Book *book)
     scanf("%u", &(book->year));
     printf("Enter the number of copies: ");
     scanf("%u", &(book->copies));
+
+    return 1;
 }
+
+//Function that writes the given book into the library using file stream
 int store_books(FILE *file)
 {
     struct Book book;
-    /*
-    char title[26], authors[26];
-    book.title = title;
-    book.authors=authors;
-*/
-    add_book(&book);
+    if(add_book(&book))
+        if(fwrite(&book, sizeof(struct Book), 1, file))
+            return 1;
 
-    /*
-    sprintf((char *)&book.year, "%d", book.year);
-    sprintf((char *)&book.copies, "%d", book.copies);
-*/
-    fprintf(file, "%s", book.title);
-    fprintf(file, "\n");
-    fprintf(file, "%s", book.authors);
-    fprintf(file, "\n");
-    fprintf(file, "%u", book.year);
-    fprintf(file, "\n");
-    fprintf(file, "%u", book.copies);
-    fprintf(file, "\n");
-}
-/*
-int stored_books(FILE *file)
-{
-    int i = 0, choice = 1;
-    struct Book book[n];
-    //struct BookArray BA;
-    // BA.array = book;
-    while (choice)
-    {
-        printf("Enter the book records(1 to continue , 0 to stop)\n");
-        scanf("%d", &choice);
-        if (choice == 1)
-        {
-            printf("Enter the book title: ");
-            scanf("%s", &book[i].title);
-            printf("Enter the list of authors as comma separated values: ");
-            scanf("%s", &book[i].authors);
-            printf("Enter the year of publication: ");
-            scanf("%u", &book[i].year);
-            printf("Enter the number of copies: ");
-            scanf("%u", &book[i].copies);
-            i++;
-        }
-    }
-    m = i;
-    
-    for (i = 0; i < m; i++)
-    {
-        printf("%s", &book[i].title);
-        printf("%s", &book[i].authors);
-        printf("%u", book[i].year);
-        printf("%u", book[i].copies);
-    }
-    
-    for (i = 0; i < m; i++)
-    {
-        sprintf((char *)&book[i].year, "%d", book[i].year);
-        sprintf((char *)&book[i].copies, "%d", book[i].copies);
-
-        fprintf(file, (char *)&book[i].title);
-        fprintf(file, "\t");
-        fprintf(file, (char *)&book[i].authors);
-        fprintf(file, "\t");
-        fprintf(file, (char *)&book[i].year);
-        fprintf(file, "\t");
-        fprintf(file, (char *)&book[i].copies);
-        fprintf(file, "\t\n");
-    }
     return 0;
 }
-*/
-int write_books(FILE *file)
-{
-    struct Book book;
-    /*
-    char title[26], authors[26];
-    book.title = title;
-    book.authors=authors;
-*/
-    add_book(&book);
-    fwrite(&book, sizeof(struct Book), 1, file);
-}
+
+//Function that reads the list of books from the library using file stream
 
 int load_books(FILE *file)
 {
     char string[100];
     struct Book book;
-    /*
-    char title[100], authors[100];
-    book.title = title;
-    book.authors=authors;
-    */
+    
     while (1)
     {
-
-        //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
-
-        printf("\n");
-
         if (!fread(&book, sizeof(struct Book), 1, file))
             break;
 
@@ -136,6 +61,9 @@ int load_books(FILE *file)
         printf("Year: %u\nCopies: %u\n", book.year, book.copies);
     }
 }
+
+//A function that returns a list of books that contains the given string as substring in its title
+
 struct BookArray find_book_by_title(const char *title)
 {
     bool found = false;
@@ -165,22 +93,11 @@ struct BookArray find_book_by_title(const char *title)
         }
     }
     BA.length = i;
-    /*
-    printf("%u\n", BA.length);
-    printf("%s", BA.array[i - 1].title);
-
-    if(found==true){
-    int ch;
-    printf(" : \n1. BORROW\n2.DELETE\n#.NOthing\n");
-    scanf("%d", &ch);
-    if (ch == 2)
-        remove_book(BA.array[i - 1]);
-    else if (ch == 1)
-        borrow_book(BA.array[i - 1]);
-    }
-    */
     return BA;
 }
+
+//A function that returns a list of books that contains the given string as substring in its list of authors
+
 struct BookArray find_book_by_author(const char *author)
 {
     char string[100];
@@ -208,9 +125,10 @@ struct BookArray find_book_by_author(const char *author)
         }
     }
     BA.length = i;
-    //printf("%u\n", BA.length);
     return BA;
 }
+
+//A function that returns a list of books that were published in the given year
 
 struct BookArray find_book_by_year (unsigned int year){
     char string[100];
@@ -218,7 +136,6 @@ struct BookArray find_book_by_year (unsigned int year){
     struct BookArray BA;
     struct Book *a = (struct Book *) malloc(n* sizeof(struct Book));
     BA.array = a;
-    //printf("%s",BA.array[i-1].authors);
      FILE *file = fopen("bookstore.txt","a+");
     if(!file){
         fprintf(stderr, "\nError opening file\n"); 
@@ -236,9 +153,10 @@ struct BookArray find_book_by_year (unsigned int year){
         }
     }
     BA.length = i;
-    //printf("%u\n",BA.length);
     return BA;
 }
+
+// A function to rewrite the list of books iinto the file 
 
 int rewrite(struct BookArray books)
 {
@@ -265,8 +183,8 @@ int rewrite(struct BookArray books)
     return 0;
 }
 
-//removes a book from the library
-//returns 0 if the book could be successfully removed, or an error code otherwise.
+// A function that removes a particular book from the library
+
 int remove_book(struct Book book)
 {
     struct BookArray books;
@@ -282,19 +200,11 @@ int remove_book(struct Book book)
 
     while (1)
     {
-        //printf("\n");
         if (!fread(&temp, sizeof(struct Book), 1, file))
             break;
 
         if ((strcmp(book.title, temp.title) == 0) && (strcmp(book.authors, temp.authors) == 0) && (book.year == temp.year))
-        {
-            /*
-            strcpy(a[i].title,book.title);
-            strcpy(a[i].authors,book.authors);
-            a[i].year  = book.year;
-            a[i].copies = book.copies;
-            i++;
-            */
+        {          
             continue;
         }
         else
@@ -316,6 +226,9 @@ int remove_book(struct Book book)
     return 0;
 }
 
+
+// A function that is used to borrow a given book and reflect the changes in the library 
+
 int borrow_book(struct Book book)
 {
     bool borrowed = false;
@@ -333,7 +246,6 @@ int borrow_book(struct Book book)
 
     while (1)
     {
-        //printf("\n");
         if (!fread(&temp, sizeof(struct Book), 1, file))
             break;
 
@@ -362,6 +274,8 @@ int borrow_book(struct Book book)
     return 0;
 }
 
+// A function that is used to return a particular book and reflect the changes in the library
+
 int return_book(struct Book book)
 {
     bool returned = false;
@@ -378,7 +292,6 @@ int return_book(struct Book book)
 
     while (1)
     {
-        //printf("\n");
         if (!fread(&temp, sizeof(struct Book), 1, file))
             break;
 
@@ -407,6 +320,8 @@ int return_book(struct Book book)
 
     return 0;
 }
+
+// A function to update the details of the given user in the user's list
 
 int rewrite_users(User u){
     FILE *fr = fopen("user.txt", "r");
@@ -437,7 +352,7 @@ int rewrite_users(User u){
     User *arr = (User *) malloc(usernos * sizeof(User));
 
     if(!arr){
-        printf("malloc error \n");
+        printf("Malloc error \n");
         return 0;
     }
     int i;
@@ -446,28 +361,15 @@ int rewrite_users(User u){
    
     for( i=0; i<usernos; i++){
         fread(&arr[i], sizeof(User), 1, fr);
-        // printf("%s, %s \n", arr[i].user_name, u.user_name);
         if(strcmp(arr[i].user_name, u.user_name)==0){
-            //printf("\ndoing hssdfa\n");
             arr[i].borrows = u.borrows;
             strcpy(arr[i].book, u.book);
         }
         
     }
-/*
-    for(i=0; i<usernos; i++){
-        printf("username = %s, borrows = %d, book = %s\n", arr[i].name, arr[i].borrows, arr[i].book);
-    }
-    */
+
     for(i=0; i<usernos; i++){
         fwrite(&arr[i], sizeof(User), 1, fw);
-        //printf("%s, %s \n", arr[i].user_name, u.user_name);
-        /*
-         if(strcmp(arr[i].user_name, u.user_name)==0){
-            printf("\n writing shit hssdfa\n");
-         }
-         */
-        
     }
     
     fclose(fw);
@@ -475,40 +377,20 @@ int rewrite_users(User u){
 
      if (remove("user.txt") == 0)
     {
-      //  printf("removed\n");
         if(rename("tempusers.txt", "user.txt")==0){
-            printf("\nRename successfully");
+            
             return 1;
         }else{
-            printf("\nnot renamed ");
+           
             return 0;
         }
         
-    }else{
-        printf("not removed\n");
     }
 
-    //printf("%d Usernos.\n", usernos);
-
-    /*
-    for ( i = 0; i < usernos; i++){
-        if (!fwrite(&books.array[i], sizeof(struct Book), 1, file))
-        {
-            fprintf(stderr, "\nError writing file\n");
-            return 0;
-        }
-    }
-    fclose(file);
-
-    if (remove("bookstore.txt") == 0)
-    {
-        rename("tempbooks.txt", "bookstore.txt");
-        return 1;
-    }
-    return 0;
-    */
    return 0;
 }
+
+// A function which allows the user to search for a particular book and borrow it
 
 int borrow_a_book(User u){
     if(u.borrows==1){
@@ -576,6 +458,7 @@ int borrow_a_book(User u){
                     if(rewrite_users(u)){
                         printf("\nUser details updated\n");
                         ch=0;
+                        free(books.array);
                         return 1;
             
                     }else{
@@ -588,8 +471,12 @@ int borrow_a_book(User u){
         }
 
     }while(ch==1 || ch==2 || ch==3);
+
+    free(books.array);
     return 0;
 }
+
+// A function which allows the user to return the book that they had borrowed
 
 int return_the_book(User u){
     if(u.borrows == 0){
@@ -598,7 +485,6 @@ int return_the_book(User u){
     }
 
     struct BookArray arr = find_book_by_title(u.book);
-    printf("%d \n", arr.length);
     if(return_book(arr.array[0])){
         u.borrows=0;
         strcpy(u.book, "");
