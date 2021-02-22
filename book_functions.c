@@ -146,6 +146,10 @@ struct BookArray find_book_by_title (const char *title){
     BA.length = i;
     printf("%u\n",BA.length);
     //printf("%s",BA.array[i-1].authors);
+    printf("%s",BA.array[i-1].authors);
+    if(remove_book(BA.array[i-1])){
+        printf("Last searched book removed");
+    }
     return BA;
 }
 struct BookArray find_book_by_author (const char *author){
@@ -184,9 +188,9 @@ struct BookArray find_book_by_year (unsigned int year){
     if(!file){
         fprintf(stderr, "\nError opening file\n"); 
     }
-    struct Book book;
     while(1){ 
-        if(!fread(&book, sizeof(struct Book), 1, file))
+        //printf("\n");
+        if(!fread(&temp, sizeof(struct Book), 1, file))
             break;   
         if(book.year == year){
             strcpy(a[i].title,book.title);
@@ -194,9 +198,15 @@ struct BookArray find_book_by_year (unsigned int year){
             a[i].year  = book.year;
             a[i].copies = book.copies;
             i++;
+           continue;
+        }else{
+            strcpy(elems[i].title,temp.title);
+            strcpy(elems[i].authors, temp.authors);
+            elems[i].year  = temp.year;
+            i++;
+            books.length = i;
         }
     }
-    BA.length = i;
     printf("%u\n",BA.length);
     return BA;
 }

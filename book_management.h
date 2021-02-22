@@ -52,4 +52,5 @@ struct BookArray find_book_by_author (const char *author);
 struct BookArray find_book_by_year (unsigned int year);
 
 int write_books(FILE *file);
+int rewrite(struct BookArray books);
 #endif
