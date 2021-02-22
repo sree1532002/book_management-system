@@ -151,6 +151,7 @@ int menu()
     printf("#.exit\n");
     printf("3.Store\n");
     printf("4. Load\n");
+    printf("5.find_book_by_title\n");
     printf("enter your choice:");
     scanf("%d",&choice);
     return choice;
@@ -213,12 +214,17 @@ int main()
         load_books(file);
         fclose(file);
     }
+    else if(choice == 5){
+        char title[50];
+        printf("Enter the title: ");
+        scanf("%s",title);
+        find_book_by_title(title);
+    }
     else
     {
         fclose(fp);
-        return 0;
     }
-
+return 0;
 
 }
 
