@@ -36,26 +36,44 @@ void writeToFile(User u)
 {
 
     FILE *fw = fopen(fileuser_name, "a+");
+    fwrite(&u, sizeof(User), 1, fw);
 
-    fprintf(fw, "%s", u.user_name);
+    /* fprintf(fw, "%s", u.user_name);
 
     fprintf(fw, "\t");
     fprintf(fw, "%s", u.password);
 
-    fprintf(fw, "\n");
+    fprintf(fw, "\n");*/
     fclose(fw);
 }
 
 int exist(User u)
 {
     int i;
-    for (i = 0; i < USER_MAX; i++)
+    FILE *fp = fopen(fileuser_name, "r");
+    User temp;
+    while (1)
+    {
+
+        //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
+
+        printf("\n");
+
+        if (!fread(&temp, sizeof(User), 1, fp))
+            break;
+
+        if (0 == strcmp(temp.user_name, u.user_name) && 0 == strcmp(temp.password, u.password))
+        {
+            return 1;
+        }
+    }
+    /*for (i = 0; i < USER_MAX; i++)
     {
         if (0 == strcmp(list[i].user_name, u.user_name) && 0 == strcmp(list[i].password, u.password))
         {
             return 1;
         }
-    }
+    }*/
     return -1;
 }
 
@@ -171,15 +189,29 @@ int main()
         printf("FILE NOT FOUND");
         return -1;
     }
-    for (i = 0; i < USER_MAX; i++)
+    while (1)
+    {
+
+        //fscanf(file,"%s%s%u%u",book.title,book.authors, &book.year, &book.copies);
+
+        printf("\n");
+
+        if (!fread(&u, sizeof(User), 1, fp))
+            break;
+
+        printf("Username: %s\n", u.user_name);
+        printf("Password: %s\n", u.password);
+    }
+    /*for (i = 0; i < USER_MAX; i++)
     {
         char uuser_name[10];
         char upassword[10];
+        
         fscanf(fp, "%s%s", uuser_name, upassword);
 
         strcpy(list[i].user_name, uuser_name);
         strcpy(list[i].password, upassword);
-    }
+    }*/
 
     int choice = menu();
     if (1 == choice)
