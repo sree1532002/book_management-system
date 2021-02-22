@@ -179,6 +179,7 @@ void registerUser()
         }
     }
     strcpy(user.password, password);
+    user.borrows=false;
     writeToFile(user);
 }
 

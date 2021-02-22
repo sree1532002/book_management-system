@@ -127,6 +127,7 @@ int load_books(FILE *file)
 }
 struct BookArray find_book_by_title(const char *title)
 {
+    bool found = false;
     char string[100];
     int i = 0;
     struct BookArray BA;
@@ -144,6 +145,7 @@ struct BookArray find_book_by_title(const char *title)
             break;
         if (strcmp(book.title, title) == 0)
         {
+            found = true;
             strcpy(a[i].title, book.title);
             strcpy(a[i].authors, book.authors);
             a[i].year = book.year;
@@ -155,6 +157,7 @@ struct BookArray find_book_by_title(const char *title)
     printf("%u\n", BA.length);
     printf("%s", BA.array[i - 1].title);
 
+    if(found==true){
     int ch;
     printf(" : \n1. BORROW\n2.DELETE\n#.NOthing\n");
     scanf("%d", &ch);
@@ -162,6 +165,7 @@ struct BookArray find_book_by_title(const char *title)
         remove_book(BA.array[i - 1]);
     else if (ch == 1)
         borrow_book(BA.array[i - 1]);
+    }
 
     return BA;
 }
@@ -239,6 +243,7 @@ int rewrite(struct BookArray books)
             return 0;
         }
     }
+    fclose(file);
 
     if (remove("bookstore.txt") == 0)
     {
@@ -335,6 +340,52 @@ int borrow_book(struct Book book)
     if (borrowed == true)
     {
         printf("\n%s book has been borrowed.\n", book.title);
+    }
+
+    if (rewrite(books))
+    {
+        return 1;
+    }
+
+    return 0;
+}
+
+int return_book(struct Book book)
+{
+    bool returned = false;
+    struct BookArray books;
+    struct Book elems[n], temp;
+    int i = 0;
+    books.array = elems;
+    books.length = 0;
+    FILE *file = fopen("bookstore.txt", "a+");
+    if (!file)
+    {
+        fprintf(stderr, "\nError opening file\n");
+    }
+
+    while (1)
+    {
+        //printf("\n");
+        if (!fread(&temp, sizeof(struct Book), 1, file))
+            break;
+
+        if ((strcmp(book.title, temp.title) == 0) && (strcmp(book.authors, temp.authors) == 0) && (book.year == temp.year))
+        {
+            temp.copies += 1;
+            returned = true;
+        }
+        strcpy(elems[i].title, temp.title);
+        strcpy(elems[i].authors, temp.authors);
+        elems[i].year = temp.year;
+        elems[i].copies = temp.copies;
+        i++;
+        books.length = i;
+    }
+    fclose(file);
+    if (returned == true)
+    {
+        printf("\n%s book has been returned.\n", book.title);
     }
 
     if (rewrite(books))
