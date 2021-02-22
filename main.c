@@ -13,7 +13,7 @@ typedef struct
     char user_name[26];
     char email[26];
     char password[26];
-    bool borrows;
+    int borrows;
     char book[40];
 } User;
 
@@ -26,10 +26,10 @@ User login()
     char user_name[25];
     char password[10];
     User lg;
-    printf("enter user_name:");
+    printf("Enter Username: ");
     scanf("%s", user_name);
     strcpy(lg.user_name, user_name);
-    printf("enter password:");
+    printf("Enter Password: ");
     scanf("%s", password);
     strcpy(lg.password, password);
     return lg;
@@ -91,7 +91,7 @@ void registerUser()
     User temp;
     int i;
     int count = 0, pcount = 0, c1 = 0, c2 = 0;
-    printf("Enter your name(max 25):");
+    printf("Enter your name(max 25): ");
     scanf("%s", name);
     if (strlen(name) > 25)
     {
@@ -100,7 +100,7 @@ void registerUser()
     }
     strcpy(user.name, name);
 
-    printf("Enter your email id:");
+    printf("Enter your email id: ");
     scanf("%s", email);
     for (i = 0; i < strlen(email); i++)
     {
@@ -121,7 +121,7 @@ void registerUser()
     }
     strcpy(user.email, email);
 
-    printf("Enter your user name(max 25):");
+    printf("Enter your user name(max 25): ");
     scanf("%s", user_name);
     if (strlen(user_name) > 25)
     {
@@ -133,14 +133,12 @@ void registerUser()
     while (1)
     {
 
-        printf("\n");
-
         if (!fread(&temp, sizeof(User), 1, fp))
             break;
 
         if (0 == strcmp(temp.user_name, user.user_name))
         {
-            printf("USER ALREADY EXIST");
+            printf("USER ALREADY EXIST\n");
             return;
         }
     }
@@ -153,7 +151,7 @@ void registerUser()
             return;
         }
     }*/
-    printf("Enter your password containing only alphanumeric characters with atleast one uppercase and atleast one special character(max 25):");
+    printf("Enter your password containing only alphanumeric characters with atleast one uppercase and atleast one special character(max 25): ");
     scanf("%s", password);
     for (i = 0; i < strlen(password); i++)
     {
@@ -311,14 +309,16 @@ int main()
     User u;
     if (NULL == fp)
     {
-        printf("FILE NOT FOUND");
+        printf("FILE NOT FOUND\n");
         return -1;
     }
     int choice = 0;
-    printf("Welcome to the library! \n");
-    printf("1.Register\n");
-    printf("2.User Login\n");
-    printf("3.Admin Login\n");
+    printf("Welcome To The Library! \n");
+    printf("1. Register(new user)\n");
+    printf("2. User Login\n");
+    printf("3. Admin Login\n");
+    printf("0. To Exit\n");
+    printf("Enter your choice: ");
     scanf("%d", &choice);
     if (choice == 1)
     {
@@ -333,38 +333,18 @@ int main()
             printf("Success\n");
             while (1)
             {
-                printf("1.Search books by Title\n");
-                printf("2.Search books by Authors\n");
-                printf("3.Search books by Year of Publication\n");
-                printf("4.Borrow Books\n");
-                printf("5.Return Books\n");
-                printf("0. To exit\n");
-                printf("Enter your choice:\n");
+                printf("1. Borrow Books\n");
+                printf("2. Return Books\n");
+                printf("0. To Exit\n");
+                printf("Enter your choice: ");
                 scanf("%d", &c);
                 if (c == 1)
                 {
-                    char title[50];
-                    printf("Enter the title: ");
-                    scanf("%s", title);
-                    find_book_by_title(title);
+                    ;
                 }
                 else if (c == 2)
                 {
-                    char author[50];
-                    printf("Enter the author: ");
-                    scanf("%s", author);
-                    find_book_by_author(author);
-                }
-                else if (c == 3)
-                {
-                    int year;
-                    printf("Enter the year of publication: ");
-                    scanf("%d", &year);
-                    find_book_by_year(year);
-                }
-                else if (c == 0)
-                {
-                    break;
+                    ;
                 }
                 else
                 {
@@ -382,20 +362,20 @@ int main()
         int c = 0;
         char adus[40];
         char adp[40];
-        printf("Enter Admin Username: \n");
+        printf("Enter Admin Username: ");
         scanf("%s", &adus);
-        printf("Enter Password: \n");
+        printf("Enter Password: ");
         scanf("%s", &adp);
         if ((strcmp(adus, "Administrator1$") == 0) && (strcmp(adp, "Minerva") == 0))
         {
             printf("Login Successful!\n");
             while (1)
             {
-                printf("1.Add Books\n");
-                printf("2.Remove books\n");
-                printf("3.Load All the books\n");
-                printf("0.To exit \n");
-                printf("Enter your choice: \n");
+                printf("1. Add Books\n");
+                printf("2. Remove Books\n");
+                printf("3. Load All The Books\n");
+                printf("0. To Exit \n");
+                printf("Enter your choice: ");
                 scanf("%d", &c);
                 if (c == 1)
                 {
@@ -428,4 +408,5 @@ int main()
             printf("Invalid Admin Credentials\n");
         }
     }
+    return 0;
 }
