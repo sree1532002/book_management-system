@@ -4,8 +4,8 @@
 #include <stdio.h>
 
 struct Book {
-		char title[40]; //book title
-		char authors[40]; //comma separated list of authors
+		char *title; //book title
+		char *authors; //comma separated list of authors
 		unsigned int year; // year of publication
 		unsigned int copies; //number of copies the library has
 };
@@ -27,7 +27,7 @@ int load_books(FILE *file);
 
 //adds a book to the ones available to the library
 //returns 0 if the book could be added, or an error code otherwise
-int add_book(struct Book *book);
+int add_book(struct Book book);
 
 //removes a book from the library
 //returns 0 if the book could be successfully removed, or an error code otherwise.
