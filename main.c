@@ -18,10 +18,12 @@ User login()
     char password[10];
     User lg;
     printf("Enter Username: ");
-    scanf("%s", user_name);
+    scanf("%[^\n]", user_name);
+    getchar();
     strcpy(lg.user_name, user_name);
     printf("Enter Password: ");
-    scanf("%s", password);
+    scanf("%[^\n]", password);
+    getchar();
     strcpy(lg.password, password);
 
     return lg;
@@ -79,7 +81,8 @@ void registerUser()
     int i;
     int count = 0, pcount = 0, c1 = 0, c2 = 0;
     printf("Enter your name(max 25): ");
-    scanf("%s", name);
+    scanf("%[^\n]", name);
+    getchar();
     if (strlen(name) > 25)
     {
         printf("Invalid name\n");
@@ -88,7 +91,8 @@ void registerUser()
     strcpy(user.name, name);
 
     printf("Enter your email id: ");
-    scanf("%s", email);
+    scanf("%[^\n]", email);
+    getchar();
     for (i = 0; i < strlen(email); i++)
     {
         if (email[i] == '@')
@@ -107,8 +111,9 @@ void registerUser()
     }
     strcpy(user.email, email);
 
-    printf("Enter your user name(max 25): ");
-    scanf("%s", user_name);
+    printf("Enter your user name (without spaces, max length 25): ");
+    scanf("%[^\n]", user_name);
+    getchar();
     if (strlen(user_name) > 25)
     {
         printf("Invalid user name\n");
@@ -131,7 +136,8 @@ void registerUser()
 
    
     printf("Enter your password containing only alphanumeric characters with atleast one uppercase and atleast one special character(max 25): ");
-    scanf("%s", password);
+    scanf("%[^\n]", password);
+    getchar();
     for (i = 0; i < strlen(password); i++)
     {
         if (isupper(password[i]))
@@ -152,7 +158,8 @@ void registerUser()
         if (c1 < 1 || c2 < 1)
         {
             printf("Enter a stronger password: ");
-            scanf("%s", password);
+            scanf("%[^\n]", password);
+            getchar();
         }
     }
     strcpy(user.password, password);
@@ -164,6 +171,7 @@ void registerUser()
 
 int main()
 {
+
     FILE *fp = fopen(fileuser_name, "r");
     int i = 0;
     User u;
@@ -180,6 +188,7 @@ int main()
     printf("0. To Exit\n");
     printf("Enter your choice: ");
     scanf("%d", &choice);
+    getchar();
     if (choice == 1)
     {
         registerUser();
@@ -190,26 +199,33 @@ int main()
         if (1 == exist(&u))
         {
             int c = 0;
-            printf("\nLogged in Successfully\n");
+            printf("Logged in Successfully\n");
+            printf("\nHello %s\n", u.name);
+            if(u.borrows==1){
+                printf("You have borrowed the book: %s\n\n", u.book );
+            }
             while (1)
             {
-                printf("1. Borrow Books\n");
+                printf("\n1. Borrow Books\n");
                 printf("2. Return Books\n");
                 printf("0. To Exit\n");
                 printf("Enter your choice: ");
                 scanf("%d", &c);
+                getchar();
                 printf("\n");
                 if (c == 1)
                 {
                     if(borrow_a_book(u)){
-                        break;
+                        exist(&u);
+                        continue;
                     }
                     
                 }
                 else if (c == 2)
                 {
                     if(return_the_book(u))
-                        break;
+                        exist(&u);
+                        continue;
                 }
                 else
                 {
@@ -219,7 +235,7 @@ int main()
         }
         else
         {
-            printf("Wrong username or password/Please register before logging in");
+            printf("Wrong username or password/Please register before logging in\n");
         }
     }
     else if (choice == 3)
@@ -228,30 +244,39 @@ int main()
         char adus[40];
         char adp[40];
         printf("Enter Admin Username: ");
-        scanf("%s", adus);
+        scanf("%[^\n]", adus);
+        getchar();
         printf("Enter Password: ");
-        scanf("%s", adp);
+        scanf("%[^\n]", adp);
+        getchar();
         if ((strcmp(adus, "admin") == 0) && (strcmp(adp, "admin") == 0))
         {
             printf("Login Successful!\n");
             while (1)
             {
-                printf("1. Add Books\n");
+                printf("\n1. Add Books\n");
                 printf("2. Remove Books\n");
                 printf("3. Load All The Books\n");
                 printf("0. To Exit \n");
                 printf("Enter your choice: ");
                 scanf("%d", &c);
+                getchar();
                 printf("\n");
                 if (c == 1)
                 {
                     FILE *file = fopen("bookstore.txt", "a+");
                     if (!file)
                     {
-                        fprintf(stderr, "\nError opening file\n");
+                        fprintf(stderr, "Error opening file\n");
                     }
-                    store_books(file);
+                    if(store_books(file)){
+                        printf("Book Added\n");
+                    }
                     fclose(file);
+                }else if(c==2){
+                     
+                    remove_the_book();
+                    
                 }
                 else if (c == 3)
                 {

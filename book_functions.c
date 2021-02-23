@@ -23,9 +23,11 @@ typedef struct
 int add_book(struct Book *book)
 {
     printf("Enter the book title: ");
-    scanf("%s", book->title);
+    scanf("%[^\n]", book->title);
+    getchar();
     printf("Enter the list of authors as comma separated values: ");
-    scanf("%s", book->authors);
+    scanf("%[^\n]", book->authors);
+    getchar();
     printf("Enter the year of publication: ");
     scanf("%u", &(book->year));
     printf("Enter the number of copies: ");
@@ -51,13 +53,13 @@ int load_books(FILE *file)
 {
     char string[100];
     struct Book book;
-    
+    int i=0;
     while (1)
     {
         if (!fread(&book, sizeof(struct Book), 1, file))
             break;
 
-        printf("Title: %s\nAuthor: %s\n", book.title, book.authors);
+        printf("\nBook No.: %d\nTitle: %s\nAuthor: %s\n",++i, book.title, book.authors);
         printf("Year: %u\nCopies: %u\n", book.year, book.copies);
     }
 }
@@ -311,7 +313,7 @@ int return_book(struct Book book)
     fclose(file);
     if (returned == true)
     {
-        printf("\n%s book has been returned.\n", book.title);
+        printf("%s book has been returned.\n", book.title);
     }
 
     if (rewrite(books))
@@ -411,17 +413,20 @@ int borrow_a_book(User u){
          printf("Enter your choice(1-3): ");
 
          scanf("%d", &ch);
+         getchar();
 
          switch(ch){
             case 1: 
                 printf("Enter the title: ");
-                scanf("%s", string);
+                scanf("%[^\n]", string);
+                getchar();
                 books = find_book_by_title(string);
                 break;
 
             case 2:
                 printf("Enter the author: ");
-                scanf("%s", string);
+                scanf("%[^\n]", string);
+                getchar();
                 books = find_book_by_author(string);
                 break;
 
@@ -444,14 +449,16 @@ int borrow_a_book(User u){
             int i=0;
             int bookno;
             for(i=0; i<books.length; i++){
-                printf("Book No. : %d\n", i+1);
+                printf("\nBook No. : %d\n", i+1);
                 printf("Title: %s\nAuthor: %s\n", books.array[i].title, books.array[i].authors);
                 printf("Year: %u\nCopies: %u\n", books.array[i].year, books.array[i].copies);
             }
 
-            printf("Enter the book you want to borrow: ");
+            printf("\nEnter the book you want to borrow: ");
             scanf("%d", &bookno);
 
+            if(bookno==0)
+                break;
             if(books.array[bookno-1].copies>=1){
                 if(borrow_book(books.array[bookno-1])){
                     u.borrows = 1;
@@ -490,7 +497,7 @@ int return_the_book(User u){
         u.borrows=0;
         strcpy(u.book, "");
         if(rewrite_users(u)){
-            printf("\nUser details updated\n");
+            printf("User details updated\n");
             return 1;
         }
     }
@@ -499,3 +506,45 @@ int return_the_book(User u){
 }
 
 
+int remove_the_book(){
+    FILE *file = fopen("bookstore.txt", "a+");
+    if (!file)
+                    {
+                        fprintf(stderr, "\nError opening file\n");
+                    }
+
+    struct BookArray arr = find_book_by_title("");
+    int i;
+    for(i=0; i<arr.length; i++){
+        printf("\nBook No: %d", i+1);
+        printf("\nTitle: %s\nAuthor: %s\n", arr.array[i].title, arr.array[i].authors);
+         printf("Year: %u\nCopies: %u\n", arr.array[i].year, arr.array[i].copies);
+    }
+
+fclose(file);
+    printf("\nEnter the book no. to be removed: ");
+    int ch;
+    scanf("%d", &ch);
+    getchar();
+
+    if(ch==0)
+        return 0;
+
+    
+    if(remove_book(arr.array[ch-1])){
+       
+        FILE *file = fopen("bookstore.txt", "a+");
+        if (!file)
+                    {
+                        fprintf(stderr, "\nError opening file\n");
+                    }
+
+        load_books(file);
+        fclose(file);
+         printf("\nThe book '%s' has been removed.\n", arr.array[ch-1].title);
+        return 1;
+    }
+
+    
+    return 0;
+}
