@@ -51,7 +51,4 @@ struct BookArray find_book_by_author (const char *author);
 //array is the null pointer.
 struct BookArray find_book_by_year (unsigned int year);
 
-
-int rewrite(struct BookArray books);
-int borrow_book(struct Book book);
 #endif

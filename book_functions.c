@@ -20,6 +20,7 @@ typedef struct
 } User;
 
 //A helping function to add the details of a book to the library
+
 int add_book(struct Book *book)
 {
     printf("Enter the book title: ");
@@ -37,6 +38,7 @@ int add_book(struct Book *book)
 }
 
 //Function that writes the given book into the library using file stream
+
 int store_books(FILE *file)
 {
     struct Book book;
@@ -454,7 +456,7 @@ int borrow_a_book(User u){
                 printf("Year: %u\nCopies: %u\n", books.array[i].year, books.array[i].copies);
             }
 
-            printf("\nEnter the book you want to borrow: ");
+            printf("\nEnter the book number of the book you want to borrow: ");
             scanf("%d", &bookno);
 
             if(bookno==0)
@@ -505,6 +507,7 @@ int return_the_book(User u){
     return 0;
 }
 
+// Function to select the book to remove from the library 
 
 int remove_the_book(){
     FILE *file = fopen("bookstore.txt", "a+");
