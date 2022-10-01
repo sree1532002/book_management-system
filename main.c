@@ -49,8 +49,6 @@ int exist(User *u)
     User temp;
     while (1)
     {
-
-
         if (!fread(&temp, sizeof(User), 1, fp))
             break;
 
@@ -69,7 +67,7 @@ int exist(User *u)
 
 //Function to register a new user
 
-void registerUser()
+int registerUser()
 {
     char name[26];
     char email[26];
@@ -79,7 +77,7 @@ void registerUser()
     FILE *fp = fopen(fileuser_name, "r");
     User temp;
     int i;
-    int count = 0, pcount = 0, c1 = 0, c2 = 0;
+    int count = 0, pcount = 0;
     printf("Enter your name(max 25): ");
     scanf("%[^\n]", name);
     getchar();
@@ -93,8 +91,7 @@ void registerUser()
     printf("Enter your email id: ");
     scanf("%[^\n]", email);
     getchar();
-    for (i = 0; i < strlen(email); i++)
-    {
+    for (i = 0; i < strlen(email); i++){
         if (email[i] == '@')
         {
             count++;
@@ -104,20 +101,19 @@ void registerUser()
                 count++;
         }
     }
-    if (count < 2)
-    {
-        printf("Invalid email id\n");
-        exit(0);
+    if (count < 2){
+        printf("Invalid email id, please try again. \n");
+        return 0;
     }
     strcpy(user.email, email);
 
-    printf("Enter your user name (without spaces, max length 25): ");
+    printf("Enter your user name (max length 25): ");
     scanf("%[^\n]", user_name);
     getchar();
     if (strlen(user_name) > 25)
     {
-        printf("Invalid user name\n");
-        exit(0);
+        printf("Invalid Username, please try again. \n");
+        return 0;
     }
     strcpy(user.user_name, user_name);
 
@@ -130,7 +126,7 @@ void registerUser()
         if (0 == strcmp(temp.user_name, user.user_name))
         {
             printf("USER ALREADY EXIST\n");
-            return;
+            return 0;
         }
     }
 
@@ -138,6 +134,8 @@ void registerUser()
     printf("Enter your password containing only alphanumeric characters with atleast one uppercase and atleast one special character(max 25): ");
     scanf("%[^\n]", password);
     getchar();
+    while(1){
+        int c1=0, c2=0;
     for (i = 0; i < strlen(password); i++)
     {
         if (isupper(password[i]))
@@ -151,7 +149,8 @@ void registerUser()
     }
     if (strlen(password) > 25)
     {
-        printf("Invalid password\n");
+        printf("Invalid password, size exceeds the limit.\n");
+        return 0;
     }
     else
     {
@@ -160,144 +159,155 @@ void registerUser()
             printf("Enter a stronger password: ");
             scanf("%[^\n]", password);
             getchar();
+        }else{
+            break;
         }
+    }
     }
     strcpy(user.password, password);
     user.borrows=0;
     writeToFile(user);
+    return 1;
 }
 
 //Driver Function
 
 int main()
 {
-
-    FILE *fp = fopen(fileuser_name, "r");
-    int i = 0;
-    User u;
-    if (NULL == fp)
-    {
-        printf("FILE NOT FOUND\n");
-        return -1;
-    }
     int choice = 0;
-    printf("Welcome To The Library! \n");
-    printf("1. Register(new user)\n");
-    printf("2. User Login\n");
-    printf("3. Admin Login\n");
-    printf("0. To Exit\n");
-    printf("Enter your choice: ");
-    scanf("%d", &choice);
-    getchar();
-    if (choice == 1)
-    {
-        registerUser();
-    }
-    else if (choice == 2)
-    {
-        u = login();
-        if (1 == exist(&u))
+    User u;
+    do{
+        printf("\nWelcome To The Library! \n");
+        printf("1. Register(new user)\n");
+        printf("2. User Login\n");
+        printf("3. Admin Login\n");
+        printf("0. To Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        getchar();
+        if (choice == 1)
+        {
+            if(registerUser()){
+                printf("New User Registered. Login Now.\n");
+                continue;
+            }
+        }
+        else if (choice == 2)
+        {
+            u = login();
+            if (1 == exist(&u))
+            {
+                int c = 0;
+                printf("Logged in Successfully\n");
+                printf("\nHello %s\n", u.name);
+                if(u.borrows==1){
+                    printf("You have borrowed the book: %s\n\n", u.book );
+                }
+                while (1)
+                {
+                    printf("\n1. Borrow Books\n");
+                    printf("2. Return Books\n");
+                    printf("3. Back to main menu.\n");
+                    printf("0. To Exit\n");
+                    printf("Enter your choice: ");
+                    scanf("%d", &c);
+                    getchar();
+                    printf("\n");
+                    if (c == 1)
+                    {
+                        if(borrow_a_book(u)){
+                            exist(&u);
+                            continue;
+                        }
+                        
+                    }
+                    else if (c == 2)
+                    {
+                        if(return_the_book(u))
+                            exist(&u);
+                            continue;
+                    }
+                    else if(c==3)
+                    {
+                        break;
+                    }else if(c==0){
+                        exit(0);
+                    }else{
+                        printf("Enter a valid choice.\n");
+                    }
+                }
+            }
+            else
+            {
+                printf("Wrong username or password/Please register before logging in.\n");
+            }
+        }
+        else if (choice == 3)
         {
             int c = 0;
-            printf("Logged in Successfully\n");
-            printf("\nHello %s\n", u.name);
-            if(u.borrows==1){
-                printf("You have borrowed the book: %s\n\n", u.book );
-            }
-            while (1)
+            char adus[40];
+            char adp[40];
+            printf("Enter Admin Username: ");
+            scanf("%[^\n]", adus);
+            getchar();
+            printf("Enter Password: ");
+            scanf("%[^\n]", adp);
+            getchar();
+            if ((strcmp(adus, "admin") == 0) && (strcmp(adp, "admin") == 0))
             {
-                printf("\n1. Borrow Books\n");
-                printf("2. Return Books\n");
-                printf("0. To Exit\n");
-                printf("Enter your choice: ");
-                scanf("%d", &c);
-                getchar();
-                printf("\n");
-                if (c == 1)
+                printf("Login Successful!\n");
+                while (1)
                 {
-                    if(borrow_a_book(u)){
-                        exist(&u);
-                        continue;
+                    printf("\n1. Add Books\n");
+                    printf("2. Remove Books\n");
+                    printf("3. Load All The Books\n");
+                    printf("4. Back to main menu.\n");
+                    printf("0. To Exit \n");
+                    printf("Enter your choice: ");
+                    scanf("%d", &c);
+                    getchar();
+                    printf("\n");
+                    if (c == 1)
+                    {
+                        FILE *file = fopen("bookstore.txt", "a+");
+                        if (!file)
+                        {
+                            fprintf(stderr, "Error opening file\n");
+                        }
+                        if(store_books(file)){
+                            printf("Book Added\n");
+                        }
+                        fclose(file);
+                    }else if(c==2){
+                        
+                        remove_the_book();
+                        
                     }
-                    
-                }
-                else if (c == 2)
-                {
-                    if(return_the_book(u))
-                        exist(&u);
-                        continue;
-                }
-                else
-                {
-                    break;
+                    else if (c == 3)
+                    {
+                        FILE *file = fopen("bookstore.txt", "r");
+                        if (!file)
+                        {
+                            fprintf(stderr, "\nError opening file\n");
+                        }
+                        load_books(file);
+                        fclose(file);
+                    }
+                    else if(c==4)
+                    {
+                        break;
+                    } else if(c==0){
+                        exit(0);
+                    }else{
+                        printf("Enter a valid choice.\n");
+                    }
                 }
             }
-        }
-        else
-        {
-            printf("Wrong username or password/Please register before logging in\n");
-        }
-    }
-    else if (choice == 3)
-    {
-        int c = 0;
-        char adus[40];
-        char adp[40];
-        printf("Enter Admin Username: ");
-        scanf("%[^\n]", adus);
-        getchar();
-        printf("Enter Password: ");
-        scanf("%[^\n]", adp);
-        getchar();
-        if ((strcmp(adus, "admin") == 0) && (strcmp(adp, "admin") == 0))
-        {
-            printf("Login Successful!\n");
-            while (1)
+            else
             {
-                printf("\n1. Add Books\n");
-                printf("2. Remove Books\n");
-                printf("3. Load All The Books\n");
-                printf("0. To Exit \n");
-                printf("Enter your choice: ");
-                scanf("%d", &c);
-                getchar();
-                printf("\n");
-                if (c == 1)
-                {
-                    FILE *file = fopen("bookstore.txt", "a+");
-                    if (!file)
-                    {
-                        fprintf(stderr, "Error opening file\n");
-                    }
-                    if(store_books(file)){
-                        printf("Book Added\n");
-                    }
-                    fclose(file);
-                }else if(c==2){
-                     
-                    remove_the_book();
-                    
-                }
-                else if (c == 3)
-                {
-                    FILE *file = fopen("bookstore.txt", "r");
-                    if (!file)
-                    {
-                        fprintf(stderr, "\nError opening file\n");
-                    }
-                    load_books(file);
-                    fclose(file);
-                }
-                else
-                {
-                    break;
-                }
+                printf("Invalid Admin Credentials\n");
             }
         }
-        else
-        {
-            printf("Invalid Admin Credentials\n");
-        }
-    }
+    }while(choice);
     return 0;
 }

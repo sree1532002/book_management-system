@@ -23,7 +23,8 @@ typedef struct
 // A function to write the book details into a file
 
 int fwrite2(struct Book *book, size_t s, int no, FILE *file){
-    for(int i=0; i<no; i++){
+    int i;
+    for(i=0; i<no; i++){
         if(!fprintf(file, "%s\t%s\t%u\t%u\n", book[i].title, book[i].authors, book[i].year, book[i].copies)){
             return 0;
         }
@@ -42,8 +43,8 @@ int fread2(struct Book *book, size_t s, int no, FILE *file){
     if(c==EOF){
         return 0;
     }
-        
-    for(int i=0; i<no; i++){
+    int i;
+    for(i=0; i<no; i++){
         if(!fscanf(file, "%[^\t]", book[i].title))
             return 0;
         fgetc(file);
@@ -124,7 +125,6 @@ int store_books(FILE *file)
 
 int load_books(FILE *file)
 {
-    char string[100];
     struct Book book;
     book.title = (char *) malloc(size * sizeof(char));
     book.authors = (char *) malloc(size * sizeof(char));
@@ -140,6 +140,9 @@ int load_books(FILE *file)
 
     free(book.title);
     free(book.authors);
+    if(i==0){
+        printf("No Books available in the library. \n");
+    }
     return 1;
 }
 
@@ -629,9 +632,14 @@ int remove_the_book(){
     if (!file)
                     {
                         fprintf(stderr, "\nError opening file\n");
+                        return 0;
                     }
 
     struct BookArray arr = find_book_by_title("");
+    if(arr.length==0){
+        printf("No Books are there to remove.\n");
+        return 0;
+    }
     int i;
     for(i=0; i<arr.length; i++){
         printf("\nBook No: %d", i+1);
